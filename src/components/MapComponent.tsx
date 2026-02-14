@@ -77,6 +77,12 @@ function getCorridorPolygon(
   ];
 }
 
+const TILE_URLS: Record<string, string> = {
+  osm: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  light: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+};
+
 interface MapComponentProps {
   vehicles: Vehicle[];
   origin: [number, number];
@@ -84,6 +90,7 @@ interface MapComponentProps {
   corridorWidth: number;
   enabledProviders: Set<string>;
   minBattery: number;
+  tileLayer: 'dark' | 'light' | 'osm';
 }
 
 export default function MapComponent({
@@ -93,6 +100,7 @@ export default function MapComponent({
   corridorWidth,
   enabledProviders,
   minBattery,
+  tileLayer,
 }: MapComponentProps) {
   const iconCache = useRef<Record<string, L.DivIcon>>({});
 
@@ -132,8 +140,10 @@ export default function MapComponent({
       zoomControl={false}
     >
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
-        url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+        key={tileLayer}
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>'
+        url={TILE_URLS[tileLayer]}
+        subdomains="abc"
       />
 
       <Marker position={origin} icon={originIcon} zIndexOffset={1000} />

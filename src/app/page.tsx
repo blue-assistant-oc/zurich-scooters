@@ -14,6 +14,7 @@ export default function Home() {
   const [radius, setRadius] = useState(500);
   const [minBattery, setMinBattery] = useState(0);
   const [corridorWidth, setCorridorWidth] = useState(80);
+  const [tileLayer, setTileLayer] = useState<'dark' | 'light' | 'osm'>('dark');
   const [enabledProviders, setEnabledProviders] = useState<Set<string>>(
     new Set(Object.keys(PROVIDERS))
   );
@@ -67,6 +68,7 @@ export default function Home() {
         corridorWidth={corridorWidth}
         enabledProviders={enabledProviders}
         minBattery={minBattery}
+        tileLayer={tileLayer}
       />
       <ControlsPanel
         origin={origin}
@@ -78,6 +80,7 @@ export default function Home() {
         providerCounts={providerCounts}
         totalCount={filteredCount}
         loading={loading}
+        tileLayer={tileLayer}
         onOriginChange={(lat, lng) => setOrigin([lat, lng])}
         onDestinationChange={(lat, lng) => setDestination([lat, lng])}
         onDestinationClear={() => setDestination(null)}
@@ -86,6 +89,7 @@ export default function Home() {
         onCorridorWidthChange={setCorridorWidth}
         onProviderToggle={handleProviderToggle}
         onRefresh={fetchScooters}
+        onTileLayerChange={setTileLayer}
       />
     </div>
   );

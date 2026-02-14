@@ -12,6 +12,7 @@ interface MapWrapperProps {
   corridorWidth: number;
   enabledProviders: Set<string>;
   minBattery: number;
+  tileLayer: 'dark' | 'light' | 'osm';
 }
 
 export default function MapWrapper(props: MapWrapperProps) {

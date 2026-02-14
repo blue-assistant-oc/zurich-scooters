@@ -19,6 +19,7 @@ interface ControlsPanelProps {
   providerCounts: Record<string, number>;
   totalCount: number;
   loading: boolean;
+  tileLayer: 'dark' | 'light' | 'osm';
   onOriginChange: (lat: number, lng: number) => void;
   onDestinationChange: (lat: number, lng: number) => void;
   onDestinationClear: () => void;
@@ -27,6 +28,7 @@ interface ControlsPanelProps {
   onCorridorWidthChange: (w: number) => void;
   onProviderToggle: (p: string) => void;
   onRefresh: () => void;
+  onTileLayerChange: (t: 'dark' | 'light' | 'osm') => void;
 }
 
 export default function ControlsPanel({
@@ -39,6 +41,7 @@ export default function ControlsPanel({
   providerCounts,
   totalCount,
   loading,
+  tileLayer,
   onOriginChange,
   onDestinationChange,
   onDestinationClear,
@@ -47,6 +50,7 @@ export default function ControlsPanel({
   onCorridorWidthChange,
   onProviderToggle,
   onRefresh,
+  onTileLayerChange,
 }: ControlsPanelProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [originQuery, setOriginQuery] = useState('');
@@ -233,6 +237,26 @@ export default function ControlsPanel({
                 <span className="flex-1">{cfg.name}</span>
                 <span className="text-gray-400 text-xs">{providerCounts[key] ?? 0}</span>
               </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Tile Layer */}
+        <div>
+          <label className="text-xs text-gray-400 uppercase tracking-wide">Map Style</label>
+          <div className="mt-1 flex gap-1">
+            {(['dark', 'light', 'osm'] as const).map(t => (
+              <button
+                key={t}
+                onClick={() => onTileLayerChange(t)}
+                className={`flex-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  tileLayer === t
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                }`}
+              >
+                {t === 'dark' ? '🌙 Dark' : t === 'light' ? '☀️ Light' : '🗺️ OSM'}
+              </button>
             ))}
           </div>
         </div>
