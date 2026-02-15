@@ -213,7 +213,7 @@ export default function Home() {
   }
 
   return (
-    <div className="fixed top-0 left-0 w-full" style={{ height: '100dvh' }}>
+    <div className="fixed inset-0">
       <MapWrapper
         vehicles={filteredVehicles}
         origin={origin}

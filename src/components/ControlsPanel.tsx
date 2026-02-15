@@ -149,7 +149,7 @@ export default function ControlsPanel({
                   aria-selected={false}
                   onClick={() => {
                     onOriginChange(r.lat, r.lng);
-                    setOriginQuery(r.display_name.split(',')[0]);
+                    setOriginQuery(r.display_name);
                     setOriginResults([]);
                   }}
                   className="w-full text-left px-3 py-1.5 hover:bg-gray-100 text-xs truncate text-gray-700"
@@ -198,7 +198,7 @@ export default function ControlsPanel({
                   aria-selected={false}
                   onClick={() => {
                     onDestinationChange(r.lat, r.lng);
-                    setDestQuery(r.display_name.split(',')[0]);
+                    setDestQuery(r.display_name);
                     setDestResults([]);
                   }}
                   className="w-full text-left px-3 py-1.5 hover:bg-gray-100 text-xs truncate text-gray-700"
