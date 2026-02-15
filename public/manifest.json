@@ -2,7 +2,7 @@
   "name": "Scooters Nearby",
   "short_name": "Scooters",
   "description": "Find nearby scooters in Zurich",
-  "start_url": "/",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",

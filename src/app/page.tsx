@@ -15,9 +15,44 @@ function parseCoord(s: string | null): [number, number] | null {
   return null;
 }
 
+const STORAGE_KEY = 'scooters-params';
+
+function saveParamsToStorage(params: Record<string, string>) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(params)); } catch {}
+}
+
+function loadParamsFromStorage(): Record<string, string> {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+
 function readUrlParams() {
   if (typeof window === 'undefined') return {};
   const p = new URLSearchParams(window.location.search);
+  const hasUrlParams = p.toString().length > 0;
+
+  // If no URL params, try to restore from localStorage (PWA home screen launch)
+  if (!hasUrlParams) {
+    const stored = loadParamsFromStorage();
+    if (Object.keys(stored).length > 0) {
+      // Restore URL from stored params
+      const sp = new URLSearchParams(stored);
+      window.history.replaceState(null, '', `?${sp.toString()}`);
+      return {
+        origin: parseCoord(stored.origin ?? null),
+        dest: parseCoord(stored.dest ?? null),
+        radius: stored.radius ? parseInt(stored.radius) : undefined,
+        minBattery: stored.minBattery ? parseInt(stored.minBattery) : undefined,
+        tileLayer: (['dark', 'light', 'osm'] as const).includes(stored.tile as 'dark' | 'light' | 'osm')
+          ? (stored.tile as 'dark' | 'light' | 'osm')
+          : undefined,
+        corridorWidth: stored.corridor ? parseInt(stored.corridor) : undefined,
+      };
+    }
+  }
+
   return {
     origin: parseCoord(p.get('origin')),
     dest: parseCoord(p.get('dest')),
@@ -82,7 +117,7 @@ export default function Home() {
     }
   }, []);
 
-  // Sync state to URL
+  // Sync state to URL + localStorage
   useEffect(() => {
     if (!origin) return;
     const p = new URLSearchParams();
@@ -95,6 +130,11 @@ export default function Home() {
     const qs = p.toString();
     const newUrl = qs ? `?${qs}` : window.location.pathname;
     window.history.replaceState(null, '', newUrl);
+
+    // Persist to localStorage for PWA home screen launches
+    const stored: Record<string, string> = {};
+    p.forEach((v, k) => { stored[k] = v; });
+    saveParamsToStorage(stored);
   }, [origin, destination, radius, minBattery, tileLayer, corridorWidth]);
 
   const fetchScooters = useCallback(async () => {
