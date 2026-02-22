@@ -30,6 +30,7 @@ interface ControlsPanelProps {
   onProviderToggle: (p: string) => void;
   onRefresh: () => void;
   onTileLayerChange: (t: 'dark' | 'light' | 'osm') => void;
+  onLocateMe: () => void;
 }
 
 export default function ControlsPanel({
@@ -53,6 +54,7 @@ export default function ControlsPanel({
   onProviderToggle,
   onRefresh,
   onTileLayerChange,
+  onLocateMe,
 }: ControlsPanelProps) {
   const [collapsed, setCollapsed] = useState(() => {
     if (typeof window === 'undefined') return true;
@@ -130,7 +132,23 @@ export default function ControlsPanel({
 
         {/* Origin */}
         <div className="space-y-1">
-          <label htmlFor="origin-input" className="text-xs text-gray-500 uppercase tracking-wide font-medium">Origin</label>
+          <div className="flex items-center justify-between">
+            <label htmlFor="origin-input" className="text-xs text-gray-500 uppercase tracking-wide font-medium">Origin</label>
+            <button
+              onClick={onLocateMe}
+              className="w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-blue-50 rounded-full"
+              aria-label="Locate me"
+              title="Locate me"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="8" cy="8" r="3" stroke="#3b82f6" strokeWidth="1.5"/>
+                <line x1="8" y1="1" x2="8" y2="4" stroke="#3b82f6" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="8" y1="12" x2="8" y2="15" stroke="#3b82f6" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="1" y1="8" x2="4" y2="8" stroke="#3b82f6" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="12" y1="8" x2="15" y2="8" stroke="#3b82f6" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+            </button>
+          </div>
           <input
             id="origin-input"
             type="text"

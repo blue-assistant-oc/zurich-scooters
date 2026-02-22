@@ -11,6 +11,7 @@ interface MapWrapperProps {
   destination: [number, number] | null;
   corridorWidth: number;
   tileLayer: 'dark' | 'light' | 'osm';
+  userLocation: [number, number] | null;
 }
 
 export default function MapWrapper(props: MapWrapperProps) {

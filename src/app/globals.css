@@ -145,3 +145,15 @@ html, body {
 .ctrl-input::placeholder {
   color: #9ca3af;
 }
+
+@keyframes user-loc-pulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+.user-loc-pulse {
+  animation: user-loc-pulse 2s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .user-loc-pulse { animation: none; opacity: 0.3; }
+}

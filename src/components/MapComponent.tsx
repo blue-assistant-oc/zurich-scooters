@@ -23,6 +23,18 @@ function createScooterIcon(provider: string): L.DivIcon {
   });
 }
 
+function createUserLocationIcon(): L.DivIcon {
+  return L.divIcon({
+    className: '',
+    html: `<div style="position:relative;width:24px;height:24px;display:flex;align-items:center;justify-content:center">
+      <div class="user-loc-pulse" style="position:absolute;width:24px;height:24px;border-radius:50%;background:rgba(59,130,246,0.35)"></div>
+      <div style="width:16px;height:16px;border-radius:50%;background:#3b82f6;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.4);position:relative;z-index:1"></div>
+    </div>`,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+  });
+}
+
 function createPinIcon(label: string, bg: string): L.DivIcon {
   return L.divIcon({
     className: '',
@@ -87,6 +99,7 @@ interface MapComponentProps {
   destination: [number, number] | null;
   corridorWidth: number;
   tileLayer: 'dark' | 'light' | 'osm';
+  userLocation: [number, number] | null;
 }
 
 export default function MapComponent({
@@ -95,6 +108,7 @@ export default function MapComponent({
   destination,
   corridorWidth,
   tileLayer,
+  userLocation,
 }: MapComponentProps) {
   // Pre-create all provider icons (only 5 providers, stable across renders)
   const iconMap = useMemo(() => {
@@ -112,6 +126,7 @@ export default function MapComponent({
 
   const originIcon = useMemo(() => createPinIcon('Origin', '#e63946'), []);
   const destIcon = useMemo(() => createPinIcon('Destination', '#1d3557'), []);
+  const userLocationIcon = useMemo(() => createUserLocationIcon(), []);
 
   return (
     <MapContainer
@@ -128,6 +143,10 @@ export default function MapComponent({
       />
 
       <Marker position={origin} icon={originIcon} zIndexOffset={1000} />
+
+      {userLocation && (
+        <Marker position={userLocation} icon={userLocationIcon} zIndexOffset={2000} />
+      )}
 
       {destination && (
         <Marker position={destination} icon={destIcon} zIndexOffset={1000} />

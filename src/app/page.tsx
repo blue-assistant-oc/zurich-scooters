@@ -77,6 +77,7 @@ function readUrlParams(): UrlParams {
 export default function Home() {
   const [origin, setOrigin] = useState<[number, number] | null>(null);
   const [destination, setDestination] = useState<[number, number] | null>(null);
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [radius, setRadius] = useState(500);
   const [minBattery, setMinBattery] = useState(0);
   const [corridorWidth, setCorridorWidth] = useState(80);
@@ -111,7 +112,9 @@ export default function Home() {
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
           (pos) => {
-            setOrigin([pos.coords.latitude, pos.coords.longitude]);
+            const coords: [number, number] = [pos.coords.latitude, pos.coords.longitude];
+            setOrigin(coords);
+            setUserLocation(coords);
             setLocating(false);
           },
           () => {
@@ -184,6 +187,29 @@ export default function Home() {
     });
   };
 
+  const handleLocateMe = useCallback(() => {
+    const proceed = () => {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const coords: [number, number] = [pos.coords.latitude, pos.coords.longitude];
+          setUserLocation(coords);
+          setOrigin(coords);
+        },
+        () => { /* do nothing on error */ },
+        { timeout: 8000, enableHighAccuracy: false }
+      );
+    };
+
+    try {
+      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+        if (result.state === 'denied') return;
+        proceed();
+      }).catch(proceed);
+    } catch {
+      proceed();
+    }
+  }, []);
+
   // Centralized filtering: provider, battery, and corridor
   const filteredVehicles = useMemo(() => {
     let filtered = vehicles.filter(v => enabledProviders.has(v.provider));
@@ -220,6 +246,7 @@ export default function Home() {
         destination={destination}
         corridorWidth={corridorWidth}
         tileLayer={tileLayer}
+        userLocation={userLocation}
       />
       <ControlsPanel
         origin={origin}
@@ -242,6 +269,7 @@ export default function Home() {
         onProviderToggle={handleProviderToggle}
         onRefresh={fetchScooters}
         onTileLayerChange={setTileLayer}
+        onLocateMe={handleLocateMe}
       />
     </div>
   );
