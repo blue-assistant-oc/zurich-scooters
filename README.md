@@ -2,7 +2,7 @@
 
 A mobile-friendly PWA showing nearby e-scooters from 6 providers on an interactive map.
 
-**Live:** Deployed on Netlify
+**Live:** Deployed on Vercel
 
 ## Providers
 
